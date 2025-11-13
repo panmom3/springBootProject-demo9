@@ -1,5 +1,6 @@
 package com.example.demo9.service;
 
+import com.example.demo9.dto.MemberDto;
 import com.example.demo9.entity.Member;
 import com.example.demo9.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -45,5 +46,10 @@ public class MemberService implements UserDetailsService {
             .password(opMember.get().getPassword())
             .roles(opMember.get().getRole().toString())
             .build();
+  }
+
+
+  public Optional<Member> getMemberByEmail(String email) {
+    return memberRepository.findByEmail(email);
   }
 }

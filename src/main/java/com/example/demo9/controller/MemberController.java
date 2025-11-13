@@ -2,6 +2,7 @@ package com.example.demo9.controller;
 
 import com.example.demo9.dto.MemberDto;
 import com.example.demo9.entity.Member;
+import com.example.demo9.repository.MemberRepository;
 import com.example.demo9.service.MemberService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,11 +16,11 @@ import org.springframework.security.web.authentication.logout.SecurityContextLog
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -28,9 +29,8 @@ import java.util.Optional;
 public class MemberController {
 
   private final MemberService memberService;
-
-  @Autowired
-  PasswordEncoder passwordEncoder;
+  private final MemberRepository memberRepository;
+  private final PasswordEncoder passwordEncoder;
 
   @GetMapping("/")
   public String homeGet() {
@@ -114,12 +114,44 @@ public class MemberController {
       rttr.addFlashAttribute("message", e.getMessage());
       return "redirect:/member/memberJoin";
     }
-
   }
 
   @GetMapping("/memberMain")
   public String memberMainGet() {
     return "member/memberMain";
   }
+
+  // 회원리스트 보기
+  @GetMapping("/memberList")
+  public String memberListGet(Model model) {
+    List<Member> memberList = memberRepository.findAll();
+    model.addAttribute("memberList", memberList);
+    return "member/memberList";
+  }
+
+  // 회원 비밀번호 변경폼 보기
+  @GetMapping("/memberPwdCheck/{flag}")
+  public String memberPwdCheckGet(Model model, @PathVariable String flag) {
+    model.addAttribute("flag", flag);
+    return "member/memberPwdCheck";
+  }
+
+  // 회원 비밀번호 검색
+  @ResponseBody
+  @PostMapping("/memberPwdCheck")
+  public String memberPwdCheckPost(String password, Principal principal) {
+    String email = principal.getName(); // 로그인한 사용자의 이메일(ID)
+
+    Optional<Member> opMember = memberService.getMemberByEmail(email);
+    if (opMember.isPresent()) {
+      Member member = opMember.get();
+      if (passwordEncoder.matches(password, member.getPassword())) {
+        return "1";  // 비밀번호 일치
+      }
+    }
+    return "0"; // 불일치 or 회원 없음
+  }
+
+
 
 }

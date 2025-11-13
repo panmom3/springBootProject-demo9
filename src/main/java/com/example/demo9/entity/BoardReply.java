@@ -1,10 +1,9 @@
 package com.example.demo9.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.Fetch;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -14,6 +13,7 @@ import java.time.LocalDateTime;
 @Table(name = "board_reply1")
 @Getter
 @Setter
+//@ToString(onlyExplicitlyIncluded = true)
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,30 +22,33 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class BoardReply {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_reply_id")
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Column(name = "board_reply_id")
+  private Long id;
 
-    // 원본글의 PK를 FK로 설정
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id", referencedColumnName = "board_id")
-    private Board board;
+  // 원본글의 PK를 FK로 설정
+  @ManyToOne(fetch = FetchType.LAZY)
+  @ToString.Exclude
+  @JoinColumn(name = "board_id", referencedColumnName = "board_id")
+  private Board board;
 
-    @Column(length = 20, nullable = false)
-    private String name;
+  @Column(length = 20, nullable = false)
+  private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "email", referencedColumnName = "email")
-    private Member member;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @ToString.Exclude
+  @JoinColumn(name = "email", referencedColumnName = "email")
+  private Member member;
 
-    @Lob
-    @NotNull
-    private String content;
+  @Lob
+  @Column(nullable = false)
+  private String content;
 
-    @Column(length = 50, nullable = false)
-    private String hopsIp;
+  @Column(length = 50, nullable = false)
+  private String hostIp;
 
-    @CreatedDate
-    private LocalDateTime wDate;
+  @CreatedDate
+  private LocalDateTime wDate;
+
 }
