@@ -92,12 +92,12 @@ public class GuestController {
 	}
   */
 
-	// 방명록 게시글 삭제처리
-	@GetMapping("/guestDelete")
-	public String guestDeleteGet(Long id) {
-		guestService.setGuestDelete(id);
+  // 방명록 게시글 삭제처리
+  @GetMapping("/guestDelete")
+  public String guestDeleteGet(Long id) {
+    guestService.setGuestDelete(id);
 
     return "redirect:/message/guestDeleteOk";
-	}
 
+  }
 }

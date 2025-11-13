@@ -44,35 +44,39 @@
         </tr>
     </table>
 
-    <div th:each="dto  : ${dtos}">
+    <div th:each="dto, st : ${dtos}">
         <table class="table table-borderless m-0 p-0">
             <tr>
-                <td class="text-start">번호 : [[${curScrStartNo}]]
-                    <th:block sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
-                        <a th:href="|javascript:guestDelete(${dto.id})|" class="badge bg-danger text-light link-primary link-underline-opacity-0 link-underline-opacity-100-hover">삭제</a>
-                    </th:block>
+                <td class="text-start">번호 : [[${curScrStartNo - st.index}]]
+                  <th:block sec:authorize="hasAnyAuthority('ROLE_ADMIN')">
+                    <!--<a th:href="|javascript:guestDelete(${dto.id})|" class="badge bg-danger text-light link-primary link-underline-opacity-0 link-underline-opacity-100-hover">삭제</a>-->
+                    <button type="button" onclick="guestCheck()"  class="badge bg-danger text-light link-primary link-underline-opacity-0 link-underline-opacity-100-hover">삭제</button>
+                  </th:block>
                 </td>
                 <td class="text-end">방문IP : [[${dto.hostIp}]]</td>
             </tr>
         </table>
         <table class="table table-bordered">
             <tr>
-                <th>성명</th>
-                <td>[[${dto.name}]]</td>
-                <th>방문일자</th>
-                <td>[[${dto.visitDate}]]</td>
+              <th>성명</th>
+              <td>[[${dto.name}]]</td>
+              <th>방문일자</th>
+              <!--<td th:text="${#strings.substring(dto.visitDate,0,19)}">-->
+              <td th:text="${#strings.substring(#strings.replace(dto.visitDate,'T',' '),0,19)}">
+                <!--[[${dto.visitDate}]]-->
+              </td>
             </tr>
             <tr>
-                <th>이메일</th>
-                <td colspan="3">
-                    [[${dto.email}]]
-                </td>
+              <th>이메일</th>
+              <td th:text="${#strings.isEmpty(dto.email) ? '없음' : dto.email}" colspan="3" class="text-start ms-3">
+                <!--[[${dto.email}]]-->
+              </td>
             </tr>
             <tr>
-                <th>홈페이지</th>
-                <td colspan="3">
-                    [[${dto.homePage}]]
-                </td>
+              <th>홈페이지</th>
+              <td th:text="${#strings.isEmpty(dto.homePage) ? '없음' : dto.homePage}" colspan="3" class="text-start ms-3">
+                <!--[[${dto.homePage}]]-->
+              </td>
             </tr>
             <tr>
                 <th>방문소감</th>
